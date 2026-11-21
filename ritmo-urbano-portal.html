@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ritmo Urbano · Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--wine:#4A0E1C;--wine2:#521422;--wine3:#3A0A15;--slate:#1A202C;--card:#232B3B;--line:#ffffff1a;--gold:#F5C518;--red:#A3123F;--redtxt:#FF5B6E;--txt:#F1F3F7;--mut:#A9B0BE;--ok:#3DDC97}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--slate);color:var(--txt);font-size:14px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.app{display:grid;grid-template-columns:230px 1fr 330px;min-height:100vh}
+#adm.wip{grid-template-columns:230px 1fr}
+#adm.wip aside.detail{display:none}
+/* sidebar */
+.side{background:var(--wine);display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.logo{display:flex;gap:10px;align-items:center;padding:20px 18px;font-weight:800;font-size:15px}
+.logo small{display:block;color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.06em}
+.logo svg{color:var(--gold)}
+.me{margin:0 14px 18px;padding:10px 12px;background:#00000040;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;gap:8px}
+.me i{width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.me b{font-size:12px;display:block}.me span{font-size:10px;color:var(--mut)}
+.me em{margin-left:auto;font-style:normal;font-size:9px;font-weight:700;background:var(--red);padding:3px 7px;border-radius:4px}
+.navlbl{padding:12px 18px 8px;font-size:10px;font-weight:600;color:var(--mut);letter-spacing:.08em;border-top:1px solid var(--line)}
+.nav button{display:flex;width:100%;align-items:center;gap:10px;padding:11px 18px;font-size:13px;font-weight:500;color:#E7D9DD;text-align:left;border-left:3px solid transparent;transition:background .15s}
+.nav button:hover{background:#ffffff12}
+.nav button.on{background:#ffffff0d;border-left-color:var(--gold);color:#fff;font-weight:700}
+.nav .tag{margin-left:auto;background:var(--gold);color:#3b2a00;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px}
+.foot{margin-top:auto;padding:14px 18px;font-size:10px;color:var(--mut);display:flex;justify-content:space-between}
+.foot b{color:var(--ok);font-weight:600}
+/* main */
+main{padding:24px 28px 40px;min-width:0}
+.top{display:flex;justify-content:space-between;font-size:11px;font-weight:700;letter-spacing:.06em;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.top span:first-child:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:10px}
+.top span:last-child{color:var(--mut);font-weight:500;letter-spacing:0}
+h1{font-size:30px;font-weight:700}
+.sub{color:var(--mut);font-size:13px;margin:4px 0 18px}
+.filters{background:var(--wine2);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.filters label{font-size:10px;font-weight:600;color:var(--mut);letter-spacing:.06em;display:block;margin-bottom:6px}
+.field{flex:1;min-width:200px}
+select,input{width:100%;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--slate);color:var(--txt);font:inherit;padding:0 12px}
+select{border:1.5px solid var(--gold);background:var(--wine);font-weight:600;cursor:pointer}
+input::placeholder{color:#7d8597}
+.btn{height:36px;padding:0 16px;border-radius:8px;background:var(--slate);border:1px solid var(--line);font-weight:600;font-size:13px;transition:.15s}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 26px}
+.kpi{background:var(--wine2);border:1px solid var(--line);border-radius:10px;padding:16px;transition:transform .15s,border-color .15s}
+.kpi:hover{transform:translateY(-2px);border-color:#ffffff40}
+.kpi h4{font-size:10px;font-weight:700;letter-spacing:.06em;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.kpi .v{font-size:30px;font-weight:800;margin:14px 0 8px;display:flex;align-items:baseline;gap:8px}
+.kpi .v small{font-size:12px;font-weight:600}
+.kpi p{font-size:11px;color:var(--mut)}
+.up{color:var(--redtxt)}.down{color:var(--ok)}
+.kpi:nth-child(1) .v{color:var(--gold)}.kpi:nth-child(3) .v span{color:var(--redtxt);font-size:20px;font-weight:600}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:3px}
+.bdg{background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:4px;letter-spacing:.03em;white-space:nowrap}
+.listhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:6px}
+.listhead h3{font-size:15px;font-weight:700}
+.listhead span{font-size:12px;color:var(--mut)}
+.list{background:var(--wine3);border:1px solid var(--line);border-radius:10px;padding:0 0 4px}
+.cols{display:flex;justify-content:space-between;padding:12px 16px;font-size:10px;font-weight:600;color:var(--mut);letter-spacing:.06em;border-bottom:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid transparent;border-bottom-color:var(--line);cursor:pointer;transition:background .15s;margin:0}
+.row:hover{background:#ffffff0a}
+.row.sel{border:1.5px solid var(--gold);border-radius:6px;background:#5a1426;margin:4px 6px;padding:14px 10px}
+.rd{width:8px;height:8px;border-radius:50%;background:var(--red);flex:none;box-shadow:0 0 0 3px #A3123F44}
+.sel .rd{background:var(--gold);box-shadow:0 0 0 3px #F5C51844}
+.who{flex:1;min-width:0}
+.who b{font-size:14px;font-weight:600;margin-right:8px}
+.who .meta{font-size:11px;color:var(--mut);margin-top:4px}
+.who .sb{font-size:9px;font-weight:700;color:var(--gold);border:1px solid var(--gold);padding:2px 6px;border-radius:4px;margin-left:4px;vertical-align:1px}
+.amt{text-align:right}.amt b{font-size:18px;font-weight:700;display:block}.amt small{font-size:10px;color:var(--mut)}
+.sel .amt b{color:var(--gold)}
+.vd{height:34px;padding:0 14px;border-radius:8px;background:var(--slate);border:1px solid var(--line);font-size:12px;font-weight:600;white-space:nowrap;transition:.15s}
+.vd:hover{border-color:var(--gold);color:var(--gold)}
+.sel .vd{border-color:var(--gold);color:var(--gold);background:transparent}
+.empty{padding:36px 16px;text-align:center;color:var(--mut)}
+/* detail */
+.detail{background:var(--wine);display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.dh{background:var(--gold);color:#3b2a00;font-weight:800;font-size:11px;letter-spacing:.06em;text-align:center;padding:12px}
+.dbody{padding:22px 18px;flex:1;display:flex;flex-direction:column;gap:12px}
+.lbl{font-size:10px;font-weight:600;color:var(--mut);letter-spacing:.06em}
+.dname{font-size:20px;font-weight:700}
+.dc{background:var(--slate);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;transition:.15s}
+.dc:hover{border-color:#ffffff45}
+.dc b{font-size:13px;font-weight:600;display:block}.dc small{font-size:11px;color:var(--redtxt)}
+.dc strong{font-size:16px;font-weight:700}
+.total{background:var(--slate);border-radius:8px;border-left:4px solid var(--gold);padding:14px;display:flex;justify-content:space-between;align-items:flex-end}
+.total b{display:block;font-size:26px;font-weight:800;color:var(--gold);margin-top:6px}
+.total small{font-size:10px;color:var(--mut)}
+.contact{background:var(--slate);border:1px solid var(--line);border-radius:8px;padding:14px;font-size:12px;display:grid;gap:10px}
+.contact div{display:flex;gap:8px;align-items:center}
+.contact svg{color:var(--gold);flex:none}
+.acts{padding:18px;display:grid;gap:10px}
+.cta{height:44px;border-radius:8px;background:var(--gold);color:#2e2200;font-weight:800;font-size:12px;letter-spacing:.03em;transition:.15s}
+.cta:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.cta.done{background:#1f5c43;color:#fff}
+.sec{height:42px;border-radius:8px;background:var(--slate);border:1px solid var(--line);font-weight:600;font-size:13px;transition:.15s}
+.sec:hover{border-color:var(--gold);color:var(--gold)}
+/* wip */
+.wip-box{display:none;border:1px dashed #ffffff40;border-radius:12px;padding:60px 20px;text-align:center;margin-top:30px}
+.wip-box h2{font-size:22px;margin-bottom:8px}.wip-box p{color:var(--mut);margin-bottom:20px}
+#adm.wip .wip-box{display:block}
+#adm.wip .rep{display:none}
+/* modal + toast */
+.ov{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.ov.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:12px;width:100%;max-width:460px;padding:22px;animation:pop .18s ease-out}
+@keyframes pop{from{transform:scale(.96);opacity:0}}
+.modal h3{font-size:18px;margin-bottom:4px}.modal .to{color:var(--mut);font-size:12px;margin-bottom:14px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.seg button{height:38px;border-radius:8px;border:1px solid var(--line);background:var(--slate);font-weight:600;font-size:13px}
+.seg button.on{border-color:var(--gold);color:var(--gold)}
+.msg{background:var(--slate);border-radius:8px;padding:12px;font-size:12px;line-height:1.55;color:#d6dae3;margin-bottom:16px;white-space:pre-line}
+.mact{display:flex;gap:10px;justify-content:flex-end}
+.mact .cta{padding:0 20px;height:40px}.mact .btn{height:40px}
+.okbox{text-align:center;padding:10px 0}
+.okbox .chk{width:54px;height:54px;border-radius:50%;background:#1f5c43;display:grid;place-items:center;margin:0 auto 12px;font-size:26px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:var(--card);border:1px solid var(--ok);padding:12px 20px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:20;font-weight:600}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:1180px){.app,#adm.wip{grid-template-columns:1fr}.side{flex-direction:row;flex-wrap:wrap;align-items:center}.me,.navlbl,.foot{display:none}.nav{display:flex;flex-wrap:wrap}.nav button{width:auto;border-left:0;border-bottom:3px solid transparent;padding:10px 12px}.nav button.on{border-bottom-color:var(--gold)}.detail{border-left:0}}
+@media(max-width:700px){.kpis{grid-template-columns:1fr}.row{flex-wrap:wrap}.amt{text-align:left}main{padding:18px 14px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ===== portal estudiantil ===== */
+body:not([data-m=adm]) #adm,body:not([data-m=stu]) #stu,body:not([data-m=reg]) #reg{display:none}
+#stu.wip{grid-template-columns:230px 1fr}#stu.wip aside.detail{display:none}
+.roles{margin-top:auto;padding:12px 14px;display:grid;gap:8px}.roles+.foot{margin-top:0}
+.roles .btn{height:auto;padding:9px 10px;font-size:12px;text-align:left}
+#stu .wip-box{margin-top:30px}
+.fl{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.fl select{width:auto}.fl span{margin-left:auto;font-size:12px;color:var(--mut)}
+.warn{background:var(--wine2);border:1px solid var(--gold);border-radius:8px;padding:12px 14px;color:#e6d7a0;margin:14px 0;font-size:13px}
+.crs{display:flex;align-items:center;gap:12px;background:var(--wine3);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;flex-wrap:wrap;transition:.15s}
+.crs:hover{border-color:#ffffff40}.crs.sel{border:1.5px solid var(--gold);background:#5a1426}
+.crs .who{flex:1;min-width:200px}.cq{color:var(--ok);font-size:12px;font-weight:600}.crs small{display:block;font-family:ui-monospace,Consolas,monospace;font-size:10px;color:var(--mut);margin-top:4px}
+.vd.g{background:var(--gold);color:#2e2200;border-color:var(--gold)}.vd:disabled{opacity:.4;cursor:not-allowed}
+.lvb{background:var(--slate);border:1px solid var(--line);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:6px;white-space:nowrap}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.seg3 button,.slot{border:1px solid var(--line);background:var(--slate);border-radius:8px;transition:.15s}
+.seg3 button{height:34px;font-size:12px;font-weight:600}.seg3 .on,.slot.on{border:1.5px solid var(--gold);color:var(--gold)}
+.slot{padding:11px 12px;cursor:pointer;display:grid;gap:4px;color:var(--txt)}.slot:hover{border-color:#ffffff50}.slot.on b{color:var(--txt)}.slot small{color:var(--mut);font-size:11px;grid-column:1/-1}.slot b{font-size:13px}
+.cb{justify-self:end;grid-row:1;grid-column:2;font-size:10px;font-weight:700;color:var(--ok);background:#0e3b2a;padding:2px 8px;border-radius:4px}.slot{grid-template-columns:1fr auto}
+.two,.g3{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g3{grid-template-columns:repeat(3,1fr);margin-top:18px}.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+.mini{background:var(--slate);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:10px;font-weight:600;color:var(--mut);letter-spacing:.05em;text-align:left}.mini b{display:block;margin-top:6px;font-size:13px;color:var(--txt);letter-spacing:0}
+.two .mini{text-align:center}.okc{color:var(--ok)!important}.gc{color:var(--gold)!important}.mut{color:var(--mut)!important}
+.close{background:var(--gold);color:#2e2200;font-size:10px;font-weight:800;padding:10px 14px;display:flex;justify-content:space-between}
+.rs{display:flex;justify-content:space-between;align-items:center}.rs h3{font-size:18px}.chip{background:var(--gold);color:#2e2200;font-size:10px;font-weight:800;padding:5px 12px;border-radius:20px;white-space:nowrap}
+.ci{align-items:flex-start;gap:10px}.ci small{display:block;margin-top:4px}.cr{text-align:right;display:grid;gap:8px;justify-items:end}.pr{font-weight:700}
+.trash{width:28px;height:26px;border-radius:6px;background:var(--red);font-size:12px}.trash:hover{filter:brightness(1.2)}
+.note{background:#1f5c43;border-radius:8px;padding:10px;font-size:12px}
+.tot{background:var(--slate);margin:0 18px;border-radius:8px;padding:12px 14px;display:grid;gap:8px;font-size:12px}.tot div{display:flex;justify-content:space-between}.tot .g{font-weight:700;font-size:14px}.tot .g b{color:var(--gold);font-size:18px}
+.rj{background:var(--red);border-color:var(--red)}.rj:hover{color:#fff;filter:brightness(1.15)}
+.strip{background:#0c1018;border:1px solid var(--line);border-radius:8px;padding:9px 14px;font-size:10px;font-weight:700;letter-spacing:.05em;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#ff9aa7;margin-bottom:20px}.strip b{color:var(--gold)}
+.hb{display:inline-block;background:#00000055;border:1px solid var(--line);color:var(--gold);font-size:11px;padding:3px 9px;border-radius:6px;vertical-align:middle;margin-left:8px;font-family:ui-monospace,Consolas,monospace}
+.card{background:var(--wine2);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:18px}.card.bad{border-color:var(--red);background:#3d0b1a}
+.ch{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.ch>div:nth-child(2){flex:1;min-width:200px}.ch h2{font-size:24px}.ch p{font-size:12px;color:#e6c9cf}
+.ic{width:46px;height:46px;border-radius:50%;background:var(--gold);color:#2e2200;display:grid;place-items:center;font-size:22px;font-weight:800}.bad .ic{background:var(--red);color:#fff}
+.mono{font-family:ui-monospace,Consolas,monospace}.box{background:var(--slate);border-radius:10px;padding:14px}.bh{display:flex;justify-content:space-between;margin-bottom:6px}
+.it{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.it small{display:block;color:var(--mut);font-size:11px;margin-top:3px}
+.tp{display:flex;justify-content:space-between;align-items:center;background:#ffffff0d;border-radius:8px;padding:14px;margin-top:12px}.tp small{display:block;font-size:11px;color:var(--mut)}.big{font-size:30px;font-weight:800;color:#dfe6ff}
+.bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:11px;color:var(--mut)}.bar .btn{height:30px;font-size:11px;margin-left:8px}
+.ban{display:flex;gap:14px;align-items:center;justify-content:space-between;background:#3d0b1a;border:1px solid var(--red);border-radius:10px;padding:14px;margin-top:18px;flex-wrap:wrap;font-size:13px}.ban .lbl{color:var(--redtxt)}.ban>div{flex:1;min-width:220px}
+.rbtn{background:var(--red);color:#fff;font-weight:700;font-size:12px;padding:0 16px;height:34px;border-radius:8px}.rbtn:hover{filter:brightness(1.2)}
+.ctr{text-align:center;padding:50px 20px}.spin{width:42px;height:42px;border:4px solid #ffffff30;border-top-color:var(--gold);border-radius:50%;margin:0 auto 16px;animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.logbox{background:#0c1018;border-radius:8px;padding:12px;font-size:11px;line-height:1.6;color:#9fe8c1;max-height:260px;overflow:auto;white-space:pre-wrap;margin-bottom:14px}
+/* registro */
+#reg{display:grid;grid-template-columns:5fr 7fr;min-height:100vh}
+.rl{background:var(--wine);padding:34px 36px;display:flex;flex-direction:column;gap:14px}.rl h1{font-size:36px;line-height:1.1}.rl p{color:var(--mut)}
+.rl .bdg{align-self:flex-start;padding:5px 12px;font-size:10px}.rl .grow{margin-top:auto}
+.rc{background:var(--slate);border:1px solid var(--line);border-radius:8px;padding:13px 16px;font-size:13px;font-weight:600;display:flex;gap:12px;align-items:center}.rc:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.rl a{color:var(--gold);font-weight:700;cursor:pointer}.rl small{color:var(--mut);display:block;margin-top:10px;font-size:10px}
+.rr{display:grid;place-items:center;padding:30px 16px}.rcard{background:var(--wine);border-radius:12px;width:100%;max-width:490px;overflow:hidden;border:1px solid var(--line)}
+.rhead{background:var(--gold);color:#2e2200;font-weight:800;font-size:11px;letter-spacing:.04em;padding:13px 20px;display:flex;justify-content:space-between;gap:8px}
+#rf{padding:22px 24px 26px;display:grid;gap:14px}#rf h2{font-size:22px}
+.fg label{font-size:11px;font-weight:700;display:flex;justify-content:space-between;margin-bottom:6px}.fg label i{color:var(--gold);font-style:normal}
+.fg .w{position:relative}.fg input{padding-right:40px}.fg input.bad{border-color:var(--redtxt)}.fg input.good{border-color:var(--gold)}
+.fg .ei{position:absolute;right:12px;top:9px;font-size:15px}
+.fe{display:none;background:#3a0a15;border:1px solid var(--red);border-radius:6px;padding:8px 10px;font-size:11px;margin-top:6px;color:#ffb3bd}.fe.on{display:block}
+.vok{display:none;border:1px solid var(--gold);color:var(--gold);font-size:10px;padding:2px 9px;border-radius:10px;font-weight:600}.vok.on{display:inline-block}
+.hint{font-size:10px;color:var(--mut);margin-top:6px}
+.eye{position:absolute;right:6px;top:3px;width:32px;height:32px}
+.cw{background:#3b2f0a;border:1px solid var(--gold);border-radius:8px;padding:11px 13px;font-size:12px;color:#f3e3a8}
+@media(max-width:1180px){#stu,#stu.wip{grid-template-columns:1fr}.roles{margin-top:0;display:flex;flex-wrap:wrap}}
+@media(max-width:800px){#reg{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr}.rl h1{font-size:28px}}
+</style>
+</head>
+<body data-m="stu">
+<div class="app" id="adm">
+  <nav class="side">
+    <div class="logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17l-6.1 3.6 1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+      <div>Ritmo Urbano<small>PORTAL ADMIN</small></div>
+    </div>
+    <div class="me"><i></i><div><b>Admin General</b><span>Escuela Central</span></div><em>ROOT</em></div>
+    <div class="navlbl">NAVEGACIÓN</div>
+    <div class="nav" id="nav"></div>
+    <div class="roles"><button class="btn rs-stu" data-a="role" data-v="stu">👤 Vista Estudiante (Sofía Rojas)</button><button class="btn" data-a="logout">⎋ Cerrar sesión</button></div>
+    <div class="foot"><span>Ritmo Urbano v2.6.4</span><b>● Online</b></div>
+  </nav>
+
+  <main>
+    <div class="top"><span>MÓDULO DE FINANZAS Y COBRANZA</span><span>🕓 Cierre Contable: 30 Nov 2026</span></div>
+
+    <div class="rep">
+      <h1>Reportes y Morosidad</h1>
+      <p class="sub">Monitoreo de cuotas vencidas, tasa de morosidad por período y gestión preventiva de pagos atrasados.</p>
+      <div class="filters">
+        <div class="field"><label for="per">FILTRAR POR PERÍODO</label>
+          <select id="per"><option value="nov">Período: Noviembre 2026</option><option value="oct">Período: Octubre 2026</option><option value="sep">Período: Septiembre 2026</option></select></div>
+        <div class="field"><label for="q">BUSCAR POR ALUMNO O RUT</label><input id="q" type="search" placeholder="Buscar por alumno o RUT" autocomplete="off"></div>
+        <button class="btn" id="apply">Aplicar Filtro</button>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="listhead"><h3>Listado de Alumnos con Cuotas Vencidas</h3><span id="count"></span></div>
+      <div class="list"><div class="cols"><span>ALUMNO Y RUT</span><span>CUOTAS Y MONTO PENDIENTE</span></div><div id="rows"></div></div>
+    </div>
+
+    <div class="wip-box">
+      <h2 id="wipT">Módulo en construcción</h2>
+      <p>Esta sección aún no forma parte del prototipo.</p>
+      <button class="cta" style="padding:0 22px" id="back">Volver a Reportes y Morosidad</button>
+    </div>
+  </main>
+
+  <aside class="detail">
+    <div class="dh">DETALLE DE MOROSIDAD Y GESTIÓN</div>
+    <div class="dbody" id="detail"></div>
+    <div class="acts">
+      <button class="cta" id="send">⚠ ENVIAR RECORDATORIO DE PAGO</button>
+      <button class="sec" id="export">⤓ Exportar Reporte del Período</button>
+    </div>
+  </aside>
+</div>
+
+<div class="ov" id="ov"><div class="modal" id="modal" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast"></div>
+
+<div class="app" id="stu">
+  <nav class="side">
+    <div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17l-6.1 3.6 1.4-6.8L2.2 9.1l6.9-.8z"/></svg><div>Ritmo Urbano<small>PORTAL ESTUDIANTIL</small></div></div>
+    <div class="me"><i></i><div><b id="sn"></b><span>Sesión iniciada</span></div><em>ESTUDIANTE</em></div>
+    <div class="navlbl">NAVEGACIÓN</div><div class="nav" id="snav"></div>
+    <div class="roles"><button class="btn rs-adm" data-a="role" data-v="adm">🛠 Vista Admin (Reportes y Morosidad)</button><button class="btn" data-a="logout">⎋ Cerrar sesión</button></div>
+    <div class="foot"><span>Ritmo Urbano v2.6.4</span></div>
+  </nav>
+  <main id="sm"></main>
+  <aside class="detail" id="sa"></aside>
+</div>
+
+<div id="reg">
+  <section class="rl">
+    <div class="logo" style="padding:0"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17l-6.1 3.6 1.4-6.8L2.2 9.1l6.9-.8z"/></svg><div>Ritmo Urbano<small>PORTAL ESTUDIANTIL</small></div></div>
+    <div class="grow"></div>
+    <span class="bdg">ACCESO ESTUDIANTIL</span>
+    <h1>Crea tu cuenta personal</h1>
+    <p>Regístrate con tus datos oficiales para gestionar tus cursos, salas y aranceles.</p>
+    <div class="rc">Inscripción a talleres y asignaturas</div><div class="rc">Reserva de salas de ensayo y equipos</div><div class="rc">Pago de matrícula y mensualidades en línea</div>
+    <div class="grow"></div>
+    <div>¿Ya tienes una cuenta? <a data-a="login">Iniciar sesión →</a><small>Portal Estudiantil Ritmo Urbano v2.6.4</small></div>
+  </section>
+  <section class="rr"><div class="rcard">
+    <div class="rhead"><span>🔒 FORMULARIO DE REGISTRO DE ESTUDIANTE</span><span>PASO 1 DE 1</span></div>
+    <form id="rf" novalidate>
+      <div><h2>Registro de Nuevo Estudiante</h2><p class="sub" style="margin:4px 0 0">Completa todos los campos obligatorios para activar tu perfil.</p></div>
+      <div class="fg"><label for="rn">NOMBRE COMPLETO <i>*</i></label><div class="w"><input id="rn" placeholder="Ej: Sofía Valentina Rojas Morales" autocomplete="off"><span class="ei" id="in"></span></div><div class="fe" id="en"></div></div>
+      <div class="fg"><label for="rr2">RUT <i>*</i><span class="vok" id="rutok">✓ Formato válido</span></label><div class="w"><input id="rr2" placeholder="Ej: 21.456.789-K" autocomplete="off"><span class="ei" id="ir"></span></div><div class="fe" id="er"></div></div>
+      <div class="fg"><label for="rm">CORREO ELECTRÓNICO <i>*</i></label><div class="w"><input id="rm" type="email" placeholder="nombre@correo.cl" autocomplete="off"><span class="ei" id="im"></span></div><div class="fe" id="em"></div></div>
+      <div class="fg"><label for="rp">CONTRASEÑA <i>*</i></label><div class="w"><input id="rp" type="password" placeholder="Mínimo 8 caracteres"><button type="button" class="eye" id="eye" aria-label="Mostrar contraseña">👁</button></div><div class="fe" id="ep"></div><div class="hint">Mínimo 8 caracteres, incluye letras y números</div></div>
+      <div class="cw">⚠ Verifica que tu RUT y correo tengan el formato correcto antes de enviar el formulario</div>
+      <button class="cta" type="submit">CREAR CUENTA →</button>
+      <button class="sec" type="button" id="clr">Limpiar Formulario</button>
+    </form>
+  </div></section>
+</div>
+
+<script>
+const REF={nov:'2026-11-12',oct:'2026-10-12',sep:'2026-09-12'};
+const PNAME={nov:'Noviembre 2026',oct:'Octubre 2026',sep:'Septiembre 2026'};
+const KPI={
+ nov:{tasa:'18,5',d:'+2.1',up:1,monto:3450000,casos:15,base:81,cr:8,lbl:'Nov 2026'},
+ oct:{tasa:'16,4',d:'+1.3',up:1,monto:2980000,casos:13,base:79,cr:6,lbl:'Oct 2026'},
+ sep:{tasa:'15,1',d:'-0.8',up:0,monto:2410000,casos:11,base:73,cr:4,lbl:'Sep 2026'}};
+const M={'09':'Septiembre','10':'Octubre','11':'Noviembre'};
+const q=(m,a)=>({due:`2026-${m}-05`,mes:M[m],amt:a});
+const S=[
+ {n:'Matías Ignacio Valdés',rut:'20.845.112-4',c:'Producción Musical',mail:'matias.valdes@correo.cl',tel:'+56 9 8412 3390',q:[q('10',160000),q('11',160000)]},
+ {n:'Camila Fernanda Soto',rut:'19.632.904-1',c:'Beatmaking Urbano',mail:'camila.soto@correo.cl',tel:'+56 9 7720 1845',q:[q('10',250000)]},
+ {n:'Diego Alonso Herrera',rut:'21.104.558-9',c:'DJ Profesional',mail:'diego.herrera@correo.cl',tel:'+56 9 6651 2078',q:[q('09',205000),q('10',205000)]},
+ {n:'Valentina Paz Muñoz',rut:'20.339.871-0',c:'Técnica Vocal',mail:'valentina.munoz@correo.cl',tel:'+56 9 9033 5412',q:[q('11',180000)]},
+ {n:'Joaquín Andrés Rojas',rut:'18.774.320-5',c:'Breakdance',mail:'joaquin.rojas@correo.cl',tel:'+56 9 5588 7461',q:[q('09',140000),q('10',140000)]},
+ {n:'Sofía Antonia Reyes',rut:'20.112.405-K',c:'Graffiti y Arte Urbano',mail:'sofia.reyes@correo.cl',tel:'+56 9 8190 4427',q:[q('11',150000)]},
+ {n:'Tomás Benjamín Araya',rut:'21.390.776-3',c:'Producción Musical',mail:'tomas.araya@correo.cl',tel:'+56 9 7342 9916',q:[q('10',205000)]}
+];
+const $=id=>document.getElementById(id);
+const money=n=>'$'+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fd=s=>s.slice(8)+'/'+s.slice(5,7)+'/'+s.slice(0,4);
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[.\-\s]/g,'');
+const days=(due,ref)=>Math.round((new Date(ref)-new Date(due))/864e5);
+let sel=null,sent={},chan='correo';
+
+function view(){ // alumnos visibles según período y búsqueda
+  const p=$('per').value,t=norm($('q').value);
+  return S.map(s=>{const qs=s.q.filter(x=>x.due<=REF[p]);
+      return {...s,qs,total:qs.reduce((a,x)=>a+x.amt,0),dias:qs.length?days(qs[0].due,REF[p]):0}})
+    .filter(s=>s.qs.length&&(!t||norm(s.n).includes(t)||norm(s.rut).includes(t)));
+}
+function render(){
+  const p=$('per').value,k=KPI[p],list=view();
+  $('kpis').innerHTML=`
+   <div class="kpi"><h4>TASA DE MOROSIDAD<i class="dot"></i></h4><div class="v">${k.tasa}%<small class="${k.up?'up':'down'}">${k.up?'↑':'↓'} ${k.d.replace('-','')}%</small></div><p>${k.casos} de ${k.base} alumnos activos</p></div>
+   <div class="kpi"><h4>MONTO TOTAL VENCIDO<span>ⓢ</span></h4><div class="v">${money(k.monto)}</div><p>Acumulado período ${k.lbl}</p></div>
+   <div class="kpi"><h4>ALUMNOS CON ATRASO<span class="bdg">ACCIÓN REQUERIDA</span></h4><div class="v">${k.casos} <span>Alumnos</span></div><p>${k.cr} casos con más de 30 días de mora</p></div>`;
+  $('count').textContent=`Mostrando ${list.length} de ${k.casos} casos prioritarios`;
+  if(!list.find(s=>s.rut===sel))sel=list[0]?.rut||null;
+  $('rows').innerHTML=list.length?list.map(s=>`
+   <div class="row ${s.rut===sel?'sel':''}" data-r="${s.rut}" tabindex="0">
+    <span class="rd"></span>
+    <div class="who"><b>${s.n}</b><span class="bdg">${s.qs.length} CUOTA${s.qs.length>1?'S':''} VENCIDA${s.qs.length>1?'S':''}</span>${s.rut===sel?'<span class="sb">SELECCIONADO</span>':''}
+     <div class="meta">RUT: ${s.rut} • ${s.c}</div></div>
+    <div class="amt"><b>${money(s.total)}</b><small>Total adeudado</small></div>
+    <button class="vd" data-r="${s.rut}">Ver detalle ${s.rut===sel?'›':''}</button></div>`).join('')
+   :'<div class="empty">Sin resultados. Prueba con otro nombre, RUT o período.</div>';
+  detail(list.find(s=>s.rut===sel));
+}
+function detail(s){
+  const send=$('send');
+  if(!s){$('detail').innerHTML='<p class="lbl">Selecciona un alumno de la lista para ver su expediente.</p>';send.disabled=true;send.style.opacity=.4;return}
+  send.disabled=false;send.style.opacity=1;
+  const done=sent[s.rut+$('per').value];
+  send.className='cta'+(done?' done':'');send.textContent=done?'✓ RECORDATORIO ENVIADO':'⚠ ENVIAR RECORDATORIO DE PAGO';
+  const crit=s.dias>30;
+  $('detail').innerHTML=`
+   <div class="lbl">EXPEDIENTE DEL ALUMNO</div><div class="dname">${s.n}</div>
+   <div><span class="bdg" style="${crit?'':'background:#8a5a00'}">● ${crit?'ATRASO CRÍTICO':'ATRASO MODERADO'} • ${s.dias} DÍAS</span></div>
+   <div class="lbl" style="margin-top:6px">DESGLOSE DE CUOTAS VENCIDAS</div>
+   ${s.qs.map(x=>`<div class="dc"><div><b>Mensualidad ${x.mes} 2026</b><small>Vencida el ${fd(x.due)}</small></div><strong>${money(x.amt)}</strong></div>`).join('')}
+   <div class="total"><div><span class="lbl">DEUDA PENDIENTE TOTAL</span><b>${money(s.total)}</b></div><small>${s.qs.length} período${s.qs.length>1?'s':''} en mora</small></div>
+   <div class="contact"><span class="lbl">CANALES DE CONTACTO OFICIAL</span>
+    <div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>Correo: <b>${s.mail}</b></div>
+    <div><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>Teléfono: <b>${s.tel}</b></div></div>`;
+}
+/* eventos */
+$('rows').addEventListener('click',e=>{const r=e.target.closest('[data-r]');if(r){sel=r.dataset.r;render()}});
+$('rows').addEventListener('keydown',e=>{if(e.key==='Enter'){const r=e.target.closest('[data-r]');if(r){sel=r.dataset.r;render()}}});
+$('q').addEventListener('input',render);$('per').addEventListener('change',render);$('apply').addEventListener('click',render);
+
+/* modal de recordatorio */
+const cur=()=>view().find(s=>s.rut===sel);
+function msgText(s){return `Hola ${s.n.split(' ')[0]}, te escribimos de Ritmo Urbano. Registras ${s.qs.length} cuota${s.qs.length>1?'s':''} vencida${s.qs.length>1?'s':''} en ${s.c} por un total de ${money(s.total)}.\nPuedes regularizar tu pago en secretaría o por transferencia. ¡Gracias!`}
+function openModal(){
+  const s=cur();if(!s)return;
+  $('modal').innerHTML=`<h3>Enviar recordatorio de pago</h3><div class="to">Para: <b>${s.n}</b></div>
+   <div class="seg"><button data-c="correo" class="${chan==='correo'?'on':''}">✉ Correo</button><button data-c="wsp" class="${chan==='wsp'?'on':''}">💬 WhatsApp</button></div>
+   <div class="lbl" style="margin-bottom:6px">DESTINO: ${chan==='correo'?s.mail:s.tel}</div>
+   <div class="msg">${msgText(s)}</div>
+   <div class="mact"><button class="btn" id="cancel">Cancelar</button><button class="cta" id="confirm">Confirmar envío</button></div>`;
+  $('ov').classList.add('open');
+  $('modal').querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{chan=b.dataset.c;openModal()});
+  $('cancel').onclick=closeModal;
+  $('confirm').onclick=()=>{
+    const c=$('confirm');c.textContent='Enviando…';c.disabled=true;
+    setTimeout(()=>{sent[s.rut+$('per').value]=1;
+      $('modal').innerHTML=`<div class="okbox"><div class="chk">✓</div><h3>Recordatorio enviado</h3><p class="to">Enviado por ${chan==='correo'?'correo a '+s.mail:'WhatsApp al '+s.tel}</p><button class="cta" style="padding:0 24px" id="okb">Listo</button></div>`;
+      $('okb').onclick=closeModal;render();toast('Recordatorio enviado a '+s.n.split(' ')[0]);},800);};
+}
+function closeModal(){$('ov').classList.remove('open')}
+$('ov').addEventListener('click',e=>{if(e.target===$('ov'))closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+$('send').addEventListener('click',openModal);
+
+/* exportar CSV */
+$('export').addEventListener('click',()=>{
+  const p=$('per').value,l=view();
+  const rows=[['Alumno','RUT','Curso','Cuotas vencidas','Dias de atraso','Deuda total (CLP)','Correo','Telefono']];
+  l.forEach(s=>rows.push([s.n,s.rut,s.c,s.qs.length,s.dias,s.total,s.mail,s.tel]));
+  const csv='\uFEFF'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(';')).join('\r\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`morosidad_${p}_2026.csv`;a.click();URL.revokeObjectURL(a.href);
+  toast('Reporte exportado (.csv)');
+});
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2400)}
+
+/* navegación lateral */
+const NAV=[['Dashboard','▦'],['Gestión de Cursos','▤'],['Aranceles y Cupos','◫'],['Reservas de Salas','▣'],['Logística y Equipos','◪'],['Reportes y Morosidad','▥']];
+function nav(act){
+  $('nav').innerHTML=NAV.map(([n,i])=>`<button class="${n===act?'on':''}" data-n="${n}"><span>${i}</span>${n}${n===act?'<span class="tag">ACTIVO</span>':''}</button>`).join('');
+  const home=act==='Reportes y Morosidad';
+  $('adm').classList.toggle('wip',!home);
+  $('wipT').textContent=act+': módulo en construcción';
+}
+$('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)nav(b.dataset.n)});
+$('back').onclick=()=>nav('Reportes y Morosidad');
+nav('Reportes y Morosidad');render();
+</script>
+<script>
+(()=>{
+const DS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'],MS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+const fdate=s=>{const d=new Date(s+'T12:00:00');return `${cap(DS[d.getDay()])} ${d.getDate()} de ${cap(MS[d.getMonth()])}, ${d.getFullYear()}`};
+const LV=['Básico','Intermedio','Avanzado'],MU={'Básico':.8,'Intermedio':1,'Avanzado':1.2};
+const C=[
+{id:'COD-PRD-202',n:'Producción Musical con Ableton Live',cat:'Música',lvl:'Intermedio',p:160000,s:[['Lunes y Miércoles • 18:00 - 20:00 hrs','Sala Estudio A • Prof. Claudio Morales',4,'2026-11-30'],['Sábados • 10:00 - 14:00 hrs','Sala Estudio B • Prof. Claudio Morales',2,'2026-12-05']]},
+{id:'COD-BTM-101',n:'Beatmaking y Sampling Urbano',cat:'Música',lvl:'Básico',p:120000,s:[['Martes y Jueves • 18:00 - 20:00 hrs','Sala Beat 1 • Prof. Álvaro Gómez',4,'2026-12-01'],['Sábados • 15:00 - 19:00 hrs','Sala Beat 2 • Prof. Álvaro Gómez',3,'2026-12-05']]},
+{id:'COD-VOC-305',n:'Técnica Vocal Urbana y Flow',cat:'Música',lvl:'Avanzado',p:180000,s:[['Viernes • 17:00 - 21:00 hrs','Cabina Vocal • Prof. Daniela Pino',1,'2026-12-04'],['Domingos • 11:00 - 15:00 hrs','Cabina Vocal • Prof. Daniela Pino',1,'2026-12-06']]},
+{id:'COD-HHP-310',n:'Hip Hop Freestyle Avanzado',cat:'Baile',lvl:'Avanzado',p:45000,s:[['Martes y Jueves • 19:30 hrs','Sala A • Prof. Marcos Valenzuela',3,'2026-12-01']]},
+{id:'COD-VOG-201',n:'Vogue Fem Coreográfico',cat:'Baile',lvl:'Intermedio',p:38000,s:[['Sábados • 11:00 hrs',"Sala D • Prof. Nicole 'Kiki'",5,'2026-12-05']]}];
+const DEF={n:'Sofía Rojas Morales',rut:'21.456.789-K',mail:'sofia.rojas@correo.cl'};
+const DEMO={oc:'OC-2026-8841',auth:'492018',items:[{n:'Matrícula Semestral 2026',s:'Derecho a salas, acreditación anual y casillero',p:180000},{n:'Curso: Producción Musical con Ableton Live • Nivel Intermedio',s:'Prof. Álvaro Gómez • Sala de Síntesis 02 • 36 hrs académicas',p:160000}],d:0,t:340000,time:'14:32:09',q:3};
+const SN=[['Dashboard','▦','w:Dashboard'],['Inscripción Cursos','▤','insc'],['Pagos / Webpay','▭','pago'],['Reservas Salas','▣','w:Reservas Salas'],['Comprobantes','▥','w:Comprobantes']];
+let U={...DEF},cart=[],pick=null,sv='insc',cf={cat:'all',lvl:'all'},P={view:'pre',last:DEMO,n:0,res:false};
+const price=(c,l)=>Math.round(c.p/MU[c.lvl]*MU[l]/1000)*1000;
+const cup=c=>c.s.reduce((a,x)=>a+x[2],0),cby=id=>C.find(c=>c.id===id);
+const total=()=>{const sub=cart.reduce((a,x)=>a+x.price,0),d=Math.round(sub*.1);return{sub,d,t:sub-d}};
+const side=(h,b,a)=>`<div class="dh">${h}</div><div class="dbody">${b}</div><div class="acts">${a}</div>`;
+const openM=h=>{$('modal').innerHTML=h;$('ov').classList.add('open')};
+const tt=n=>n.split(' ').slice(0,2).join(' ');
+
+/* ---- vistas ---- */
+function mIns(){
+ const l=C.filter(c=>(cf.cat==='all'||c.cat===cf.cat)&&(cf.lvl==='all'||c.lvl===cf.lvl));
+ return `<div class="top"><span>MÓDULO DE INSCRIPCIÓN ACADÉMICA</span><span>Primer Semestre 2026</span></div>
+ <h1 style="font-size:26px">Selección de Curso, Nivel y Horario</h1><p class="sub">Elige un programa, selecciona tu nivel y escoge un horario con cupos disponibles</p>
+ <div class="fl"><select data-f="cat" aria-label="Categoría"><option value="all">Categoría: Todos los cursos</option>${['Música','Baile'].map(x=>`<option ${cf.cat===x?'selected':''}>${x}</option>`).join('')}</select>
+ <select data-f="lvl" aria-label="Nivel"><option value="all">Nivel: Todos</option>${LV.map(x=>`<option ${cf.lvl===x?'selected':''}>${x}</option>`).join('')}</select><span>Mostrando ${l.length} programas activos</span></div>
+ <div class="warn">⚠ Solo se muestran horarios con cupos vigentes. Debes mantener tu sesión iniciada para reservar.</div>
+ <div class="listhead"><h3>Listado de cursos disponibles</h3><span>Cupos y acción</span></div>
+ ${l.map(c=>{const n=cup(c),on=pick&&pick.id===c.id;
+  return `<div class="crs ${on?'sel':''}"><span class="rd" style="background:var(--gold)"></span><div class="who"><b>${c.n}</b><span class="lvb">NIVEL ${c.lvl.toUpperCase()}</span><small>${c.id}</small></div>
+  ${n===0?'<span class="bdg">Agotado</span>':n<=2?`<span class="bdg">Últimos ${n} cupos</span>`:`<span class="cq">${n} cupos disponibles</span>`}
+  <button class="vd ${on?'g':''}" data-a="sel" data-v="${c.id}" ${n?'':'disabled'}>${on?'Seleccionado ✓':'Seleccionar'}</button></div>`}).join('')||'<div class="empty">No hay cursos con estos filtros.</div>'}`}
+function aIns(){
+ const H='CONFIGURAR HORARIO Y RESERVAR CUPO';
+ if(!pick)return side(H,'<p class="lbl">Selecciona un programa del listado para configurar nivel y horario.</p>','');
+ const c=cby(pick.id),s=c.s[pick.si];
+ return side(H,`<div class="dname" style="font-size:18px">${c.n}</div><div><span class="bdg">NIVEL ${pick.lvl.toUpperCase()}</span></div>
+ <div class="lbl">NIVEL DEL CURSO</div><div class="seg3">${LV.map(l=>`<button data-a="lvl" data-v="${l}" class="${l===pick.lvl?'on':''}">${l}</button>`).join('')}</div>
+ <div class="lbl">HORARIOS CON CUPOS DISPONIBLES</div>
+ ${c.s.map((x,i)=>`<div class="slot ${i===pick.si?'on':''}" data-a="slot" data-v="${i}"><b>${x[0]}</b><span class="cb">${x[2]} cupos</span><small>${x[1]}</small></div>`).join('')}
+ <div class="total"><div><span class="lbl">FECHA ESTIMADA DE INICIO</span><b style="font-size:16px;color:var(--txt)">${fdate(s[3])}</b></div></div>
+ <div class="two"><div class="mini" style="text-align:center">ESTADO<b class="okc">Sesión Verificada</b></div><div class="mini" style="text-align:center">ARANCEL<b class="gc">${money(price(c,pick.lvl))}</b></div></div>`,
+ `<button class="cta" data-a="add">🛒 AGREGAR CUPO AL CARRITO</button><button class="sec" data-a="cancel">Cancelar Selección</button>`)}
+const itemsHtml=()=>cart.map(x=>`<div class="it"><div><b>${x.n} • ${x.lvl}</b><small>${x.det} • ${x.sch}</small></div><b class="mono">${money(x.price)}</b></div>`).join('');
+function okCard(r){return `<div class="card"><div class="ch"><div class="ic">✓</div><div><h2>¡Pago Aprobado y Cupo Asegurado!</h2><p>Confirmación inmediata de vacante académica en servidores centrales.</p></div><span class="chip">🔒 TRANSACCIÓN CIFRADA EXITOSA</span></div>
+ <div class="g4"><div class="mini">ORDEN DE COMPRA<b class="mono">${r.oc}</b></div><div class="mini">MEDIO DE PAGO<b>Webpay Plus (Débito/Crédito)</b></div><div class="mini">CÓDIGO AUTORIZACIÓN<b class="mono">${r.auth}</b></div><div class="mini">ESTADO DEL CUPO<b class="gc">Descontado y Asignado (Quedan ${r.q})</b></div></div>
+ <div class="box"><div class="bh"><span class="lbl">ÍTEMS PROCESADOS EN MATRÍCULA</span><span class="lbl">${r.items.length} Conceptos Registrados</span></div>
+ ${r.items.map(i=>`<div class="it"><div><b>${i.n}</b><small>${i.s}</small></div><b class="mono">${money(i.p)}</b></div>`).join('')}
+ ${r.d?`<div class="it"><div><b>Descuento Alumno Regular (10%)</b></div><b class="mono">-${money(r.d)}</b></div>`:''}
+ <div class="tp"><div><span class="lbl">TOTAL PAGADO VÍA WEBPAY</span><small>Impuestos y cargos Transbank incluidos (CLP)</small></div><span class="big">${money(r.t)}</span></div></div>
+ <div class="bar"><span>🕓 Transacción registrada a las ${r.time} CLT • Tarjeta terminada en 8923</span><span><button class="btn" data-a="copy">⧉ Copiar Referencia</button><button class="btn" data-a="log">🛡 Ver Log Criptográfico</button></span></div></div>
+ <div class="g3"><div class="mini">ESTATUS ACADÉMICO<b>Activo Regular 2026</b></div><div class="mini">CREDENCIAL VIRTUAL<b>Habilitada con Código QR</b></div><div class="mini">SINCRONIZACIÓN LMS<b>Materiales Disponibles</b></div></div>`}
+function badCard(){return `<div class="card bad"><div class="ch"><div class="ic">✕</div><div><h2>Transacción Rechazada por el banco</h2><p>Código 05 • Tarjeta rechazada por el emisor. No se descontó ningún cupo.</p></div><span class="bdg" style="padding:6px 12px">PAGO NO COMPLETADO</span></div>
+ <div class="box" style="margin-top:18px"><div class="bh"><span class="lbl">ÍTEMS GUARDADOS EN EL CARRITO</span><span class="lbl">${cart.length} Conceptos</span></div>${itemsHtml()||'<p class="mut" style="padding:8px 0">Tu carrito está vacío.</p>'}</div>
+ <div class="mact" style="margin-top:16px"><button class="btn" data-a="go" data-v="insc">Volver a Inscripción</button><button class="cta" style="padding:0 22px;height:40px" data-a="pay">Reintentar pago</button></div></div>`}
+function preCard(){const t=total();
+ if(!cart.length)return `<div class="card ctr"><h2>Tu carrito está vacío</h2><p class="mut" style="margin:8px 0 16px">Agrega un curso para generar el resumen de pago.</p><button class="cta" style="padding:0 22px" data-a="go" data-v="insc">Ir a Inscripción Cursos</button></div>`;
+ return `<div class="card"><div class="ch"><div class="ic">🔒</div><div><h2>Resumen listo para procesar</h2><p>Revisa tus ítems y paga con Webpay Plus. Tu cupo se asigna al aprobarse el pago.</p></div></div>
+ <div class="box" style="margin-top:18px">${itemsHtml()}<div class="tp"><div><span class="lbl">TOTAL A PAGAR (CON 10% DESC.)</span><small>Subtotal ${money(t.sub)} • Descuento -${money(t.d)}</small></div><span class="big">${money(t.t)}</span></div></div></div>`}
+function mPay(){const v=P.view;
+ const body=v==='load'?`<div class="card ctr"><div class="spin"></div><h2>Conectando con Webpay Plus…</h2><p class="mut">No cierres esta ventana. Validando tu transacción.</p></div>`:v==='ok'?okCard(P.last):v==='bad'?badCard():preCard();
+ return `<div class="strip"><span>● PASARELA DE PAGO EN LÍNEA • CONEXIÓN CIFRADA TLS 1.3</span><b>🛡 Transbank Webpay Plus Certificado</b></div>
+ <h1 style="font-size:30px">Pago Seguro con Webpay <span class="hb">HTTP ${v==='bad'?'402':'200'} ${v==='bad'?'ERR':'OK'}</span></h1>
+ <p class="sub" style="max-width:640px">Tu inscripción y cupo se confirman automáticamente al aprobarse la transacción, sin necesidad de enviar comprobantes manuales ni validar transferencias.</p>${body}
+ <div class="ban"><div><span class="lbl">SIMULADOR DE CONTINGENCIA BANCARIA</span><p style="margin-top:4px">Transacción rechazada por el banco: No se descontó ningún cupo y tus ítems siguen guardados en el carrito para reintentar con otra tarjeta.</p></div><button class="rbtn" data-a="sim">👁 ${v==='bad'?'Ver vista de aprobado':'Ver vista de error'}</button></div>`}
+function aPay(){const t=total();
+ return `<div class="close"><span>⏰ CIERRE INSCRIPCIONES</span><b>18:00 hrs</b></div><div class="dbody"><div class="rs"><h3>Resumen Matrícula</h3><span class="chip">${cart.length} Seleccionados</span></div>
+ ${cart.map((x,i)=>`<div class="dc ci"><div><b>${x.n}</b><small class="mut">Nivel ${x.lvl} • ${x.det}</small><small class="gc">${x.sch}</small></div><div class="cr"><span class="pr">${money(x.price)}</span><button class="trash" data-a="del" data-v="${i}" aria-label="Quitar">🗑</button></div></div>`).join('')||'<p class="lbl">Tu carrito está vacío. Agrega cursos desde Inscripción Cursos.</p>'}
+ ${P.res&&cart.length?'<div class="note">✓ Cupo reservado por 24 horas sin pago.</div>':''}</div>
+ <div class="tot"><div><span>Subtotal Talleres</span><b>${money(t.sub)}</b></div><div><span>Descuento Alumno Regular (10%)</span><b>-${money(t.d)}</b></div><div class="g"><span>Total a Pagar</span><b>${money(t.t)}</b></div></div>
+ <div class="acts"><button class="cta" data-a="pay" ${cart.length?'':'disabled'}>🔒 Pagar con Webpay Plus</button><button class="sec rj" data-a="reserve">Reservar Cupo sin Pago</button></div>`}
+function rStu(){
+ const w=sv[0]==='w';$('stu').classList.toggle('wip',w);$('sn').textContent=U.n;
+ $('snav').innerHTML=SN.map(([l,i,v])=>{const on=v===sv;return `<button class="${on?'on':''}" data-a="go" data-v="${v}"><span>${i}</span>${l}${on?'<span class="tag">ACTIVO</span>':v==='pago'&&cart.length?`<span class="tag" style="background:var(--red);color:#fff">${cart.length}</span>`:''}</button>`}).join('');
+ if(w){$('sm').innerHTML=`<div class="top"><span>PORTAL ESTUDIANTIL</span></div><div class="wip-box" style="display:block"><h2>${sv.slice(2)}: módulo en construcción</h2><p>Esta sección aún no forma parte del prototipo.</p><button class="cta" style="padding:0 22px" data-a="go" data-v="insc">Volver a Inscripción Cursos</button></div>`;return}
+ $('sm').innerHTML=sv==='insc'?mIns():mPay();$('sa').innerHTML=sv==='insc'?aIns():aPay();
+}
+function setMode(m){document.body.dataset.m=m;document.querySelectorAll('.rs-stu').forEach(b=>b.textContent=`👤 Vista Estudiante (${tt(U.n)})`);if(m==='stu')rStu();scrollTo(0,0)}
+
+/* ---- acciones ---- */
+const A={
+ go(d){sv=d.v;closeModal();rStu()},
+ sel(d){pick={id:d.v,lvl:cby(d.v).lvl,si:0};rStu()},
+ lvl(d){pick.lvl=d.v;rStu()},slot(d){pick.si=+d.v;rStu()},cancel(){pick=null;rStu()},
+ add(){const c=cby(pick.id),s=c.s[pick.si];if(s[2]<1)return toast('Sin cupos en este horario');
+  const it={id:c.id,si:pick.si,n:c.n,lvl:pick.lvl,sch:s[0],det:s[1],price:price(c,pick.lvl)},i=cart.findIndex(x=>x.id===c.id);
+  i<0?cart.push(it):cart[i]=it;P.view='pre';P.res=false;rStu();
+  openM(`<div class="okbox"><div class="chk">🛒</div><h3>Cupo agregado al carrito</h3><p class="to">${c.n} • ${pick.lvl}<br>Total del carrito: ${money(total().t)}</p><div class="mact" style="justify-content:center"><button class="btn" data-a="close">Seguir eligiendo</button><button class="cta" style="padding:0 20px" data-a="go" data-v="pago">Ir al módulo de pago</button></div></div>`)},
+ close(){closeModal()},
+ del(d){cart.splice(+d.v,1);rStu()},
+ reserve(){if(!cart.length)return toast('Agrega un curso antes de reservar');P.res=true;rStu();toast('Cupo reservado por 24 horas')},
+ pay(){if(!cart.length)return toast('Tu carrito está vacío');P.view='load';rStu();
+  setTimeout(()=>{const t=total(),f=cart[0];cart.forEach(x=>{const s=cby(x.id).s[x.si];if(s[2]>0)s[2]--});P.n++;
+   P.last={oc:'OC-2026-'+(8841+P.n),auth:String(100000+Math.floor(Math.random()*899999)),items:cart.map(x=>({n:`Curso: ${x.n} • Nivel ${x.lvl}`,s:`${x.det} • ${x.sch}`,p:x.price})),d:t.d,t:t.t,time:new Date().toTimeString().slice(0,8),q:cby(f.id).s[f.si][2]};
+   cart=[];pick=null;P.view='ok';P.res=false;rStu();toast('Pago aprobado')},1600)},
+ sim(){P.view=P.view==='bad'?'ok':'bad';rStu()},
+ copy(){const r=P.last,t=`${r.oc} | Autorización ${r.auth} | Total ${money(r.t)}`;
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}).finally(()=>toast('Referencia copiada'))},
+ log(){const r=P.last;openM(`<h3 style="margin-bottom:10px">Log criptográfico</h3><div class="logbox">[${r.time}] TLS 1.3 handshake OK (TLS_AES_256_GCM_SHA384)
+[${r.time}] POST /rswebpaytransaction/api/webpay/v1.2/transactions 200
+[${r.time}] buy_order=${r.oc} amount=${r.t} currency=CLP
+[${r.time}] token_ws=01ab${r.auth}f3c9e7d2a8b4 (cifrado AES-256)
+[${r.time}] response_code=0 status=AUTHORIZED auth=${r.auth}
+[${r.time}] cupo: DESCONTADO → ASIGNADO | firma HMAC-SHA256 verificada ✔</div><div class="mact"><button class="cta" data-a="close">Cerrar</button></div>`)},
+ role(d){setMode(d.v)},logout(){setMode('reg')},login(){U={...DEF};setMode('stu')}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset)});
+document.addEventListener('change',e=>{const f=e.target.dataset.f;if(f){cf[f]=e.target.value;rStu()}});
+
+/* ---- registro ---- */
+const USED=['sofia.rojas@correo.cl','admin@ritmourbano.cl','matias.valdes@correo.cl'],T={};
+function rutOk(v){const c=v.replace(/[^0-9kK]/g,'').toUpperCase();if(c.length<8||c.length>9)return false;let s=0,m=2;for(let i=c.length-2;i>=0;i--){s+=c[i]*m;m=m===7?2:m+1}const r=11-s%11;return c.slice(-1)===(r===11?'0':r===10?'K':String(r))}
+const fmtRut=v=>{const c=v.replace(/[^0-9kK]/g,'').toUpperCase().slice(0,9);return c.length<2?c:c.slice(0,-1).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+'-'+c.slice(-1)};
+const F={n:$('rn'),r:$('rr2'),m:$('rm'),p:$('rp')},EI={n:'in',r:'ir',m:'im'};
+function mark(k,ok,err,show){const t=T[k]||show,bad=t&&!ok,good=ok&&F[k].value;F[k].classList.toggle('bad',!!bad);F[k].classList.toggle('good',!!good);
+ const e=$('e'+({n:'n',r:'r',m:'m',p:'p'})[k]);e.textContent=bad?err:'';e.classList.toggle('on',!!bad);
+ if(EI[k])$(EI[k]).textContent=bad?'🔴':good?'✅':''}
+function chk(show){
+ const n=F.n.value.trim().split(/\s+/).filter(Boolean),nOk=n.length>=2&&n.join('').length>=5;
+ const rOk=rutOk(F.r.value),mv=F.m.value.trim().toLowerCase(),mF=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mv),mU=USED.includes(mv);
+ const pv=F.p.value,pOk=pv.length>=8&&/[A-Za-z]/.test(pv)&&/\d/.test(pv);
+ mark('n',nOk,'Ingresa tu nombre y apellido.',show);mark('r',rOk,'RUT inválido. Ejemplo: 21.456.789-K',show);
+ mark('m',mF&&!mU,mU?'Este correo electrónico ya se encuentra registrado en el sistema':'Ingresa un correo válido (ej: nombre@correo.cl)',show);
+ mark('p',pOk,'Mínimo 8 caracteres, con letras y números.',show);
+ $('rutok').classList.toggle('on',rOk);
+ return nOk&&rOk&&mF&&!mU&&pOk}
+Object.keys(F).forEach(k=>F[k].addEventListener('input',()=>{if(k==='r')F.r.value=fmtRut(F.r.value);T[k]=1;chk(false)}));
+$('eye').onclick=()=>{const h=F.p.type==='password';F.p.type=h?'text':'password';$('eye').textContent=h?'🙈':'👁'};
+const clear=()=>{$('rf').reset();for(const k in T)delete T[k];F.p.type='password';chk(false)};
+$('clr').onclick=clear;
+$('rf').addEventListener('submit',e=>{e.preventDefault();['n','r','m','p'].forEach(k=>T[k]=1);
+ if(!chk(true))return toast('Revisa los campos marcados');
+ U={n:F.n.value.trim(),rut:F.r.value,mail:F.m.value.trim().toLowerCase()};cart=[];pick=null;P={view:'pre',last:DEMO,n:0,res:false};sv='insc';clear();setMode('stu');toast(`Cuenta creada. Bienvenido/a, ${U.n.split(' ')[0]}`)});
+
+setMode('stu');
+})();
+</script>
+</body>
+</html>
